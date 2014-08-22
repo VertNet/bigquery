@@ -111,19 +111,19 @@ class Exporter():
         print "Starting extraction of class-level files for full dump version {0}".format(self.table_version)
         
         # Create a dataset to store the class tables
-        #self.create_dataset()
+        self.create_dataset()
         
         # Create tables
-        #self.create_tables()
+        self.create_tables()
         
         # Wait until all jobs finish
-        #self.wait_jobs(timeout=10)
+        self.wait_jobs(timeout=10)
         
         # Export tables to Cloud Storage
-        #self.export_tables()
+        self.export_tables()
         
         # Wait until all jobs finish
-        #self.wait_jobs(timeout=20)
+        self.wait_jobs(timeout=20)
         
         # Remove all class tables
         self.remove_dataset()
