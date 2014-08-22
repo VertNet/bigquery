@@ -8,7 +8,7 @@ Requirements
 
 In order to run, this script needs the googleapis module installed and accessible to python via the PYTHONPATH. The module and instructions on how to install it can be found here: https://github.com/jotegui/googleapis.
 
-It also requires the client_secrets.json file, which can be obtained through the Developers' console (https://console.developers.google.com).
+It also requires the client_secrets.json file, which can be obtained through the Developers' console (https://console.developers.google.com). Please refer to the documentation in the googleapis GitHub repo for instructions on how to get this client_secrets.json file.
 
 The configuration variables for the BigQuery and CloudStorage services are included in the folder, in the byclass_cred.py module. The byClass.py script is prepared to load them automatically.
 
@@ -40,5 +40,19 @@ Then simply run:
 And enjoy the show. The program will throw updates on each step. It takes a while to finish, the longest step being the export to Cloud Storage.
 
 Once finished, the class-based csv files will be found in he vertnet-byclass bucket on Cloud Storage.
+
+What it does
+------------
+
+This program generates a series of class-based occurrence files from a given version of the full dump.
+
+1. First, it creates a new dataset, called by default 'byclass', that will hold the class-based tables.
+2. Then it creates a table for each taxonomic class, querying the specified version of the full dump.
+3. When all the tables are created, it then dumps the content of the tables to a sharded csv file for each taxonomic class.
+4. Then, it merges all the shards into a single csv file for each class.
+5. Lastly, it removes the individual chunks and the whole 'byclass' dataset, in order to kep things clean.
+
+Contact
+-------
 
 Any question, shoot me an email (javier.otegui@gmail.com)
