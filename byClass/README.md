@@ -31,7 +31,7 @@ How it works
 
 Make sure the client_secrets.json, bigquery.dat and storage.dat files are in the same folder as the byClass.py and byclass_cred.py files.
 
-Inside byClass.py, on line 141, the version of the full dump to be used can be specified. By default, it has the 20140730 value, which points to the dumps.full_20140730 table in BigQuery. This can me modified before running the script to generate files based on different versions. The value must match the date value in dumps.full_YYYYMMDD.
+Inside byClass.py, on line 141, the version of the full dump to be used can be specified. By default, it has the 20140730 value, which points to the dumps.full_20140730 table in BigQuery. This can be modified before running the script to generate files based on different versions. The value must match the date value in dumps.full_YYYYMMDD.
 
 Then simply run:
 
