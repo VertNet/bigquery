@@ -1,3 +1,5 @@
+__author__ = '@jotegui'
+
 from googleapis import BigQuery as BQ
 from googleapis import CloudStorage as CS
 from byclass_cred import bq_cred, cs_cred
