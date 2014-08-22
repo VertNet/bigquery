@@ -84,8 +84,6 @@ class Exporter():
                 destinationObject = "{0}_{1}.csv".format(i, self.table_version)
                 resp = self.cs.compose(req_body, destinationObject)
                 print 'File {0} created in bucket {1}'.format(resp['name'], resp['bucket'])
-                #self.compose_jobs[i] = resp['jobReference']['jobId']
-                #print "Compose: class: {0}, jobId: {1}".format(i, resp['jobReference']['jobId'])
             else:
                 sourceObject = req_body['sourceObjects'][0]['name']
                 destinationObject = "{0}_{1}.csv".format(i, self.table_version)
