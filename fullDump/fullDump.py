@@ -2,7 +2,7 @@ __author__ = '@jotegui'
 
 from googleapis import BigQuery as BQ
 from googleapis import CloudStorage as CS
-from fulldumps_cred import bq_cred, cs_cred
+from fulldump_cred import bq_cred, cs_cred
 
 from datetime import datetime
 import requests
