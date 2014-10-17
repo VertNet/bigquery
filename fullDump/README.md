@@ -57,7 +57,7 @@ What it does
 This program dumps a full snapshot of the VertNet harvested files into a new BigQuery table.
 
 1. It first creates the 'dumps' dataset, if it doesn't previously exist.
-2. Then, it extracts a list of all the VertNet IPT resources and their last harvested folder path from the CartoDB resource_staging table.
+2. Then, it extracts a list of all the VertNet IPT resources and their last harvested folder path from the CartoDB resource_staging table. Important: Make sure the the harvestfolder field is filled with the latest harvest for the resource. Even more important: Make sure that the schema for every harvested file is consistent with the schema for BigQuery. If there was a change in the harvesting schema, there will have to be a complete reharvest and full dump from these newly harvested files.
 3. For each of those files, it creates a single job to load the data into the BigQuery table
 4. Once all jobs have finished, it checks if any job has failed. This usually happens because a data file has a strange character. If the load job fails, the whole upload of the resource is aborted.
 5. For those failed jobs, it runs an individual load job for each data file. Thus, all files except the problematic ones will be present in the dump.
