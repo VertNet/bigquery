@@ -42,7 +42,7 @@
     }, 
     {
       "type": "STRING", 
-      "name": "license"
+      "name": "iptlicense"
     }, 
     {
       "type": "STRING", 
@@ -734,7 +734,7 @@
     }, 
     {
       "type": "STRING", 
-      "name": "taxonremarks
+      "name": "taxonremarks"
     }
   ]
 }
