@@ -40,7 +40,8 @@ class Dumper():
         
         # Call CartoDB API
         api_url = "https://vertnet.cartodb.com/api/v2/sql"
-        q = "select harvestfolder from resource_staging where ipt is true and networks like '%VertNet%'"
+        # q = "select harvestfolder from resource_staging where ipt is true and networks like '%VertNet%'"
+        q = "select harvestfoldernew from resource_staging where icode='UNR'"
         params = {'q': q}
         r = requests.get(api_url, params=params)
         
@@ -48,7 +49,8 @@ class Dumper():
         if r.status_code == 200:
             rows = json.loads(r.content)['rows']
             for i in rows:
-                self.resources.append(i['harvestfolder'].split('/', 1)[1])
+#                self.resources.append(i['harvestfolder'].split('/', 1)[1])
+                self.resources.append(i['harvestfoldernew'].split('/', 1)[1])
         else:
             print "Something went wrong with the query:"
             print r.text
