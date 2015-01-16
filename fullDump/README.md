@@ -1,69 +1,76 @@
 fullDump
 ========
 
-Migration of a snapshot of the VertNet harvested files to BigQuery.
+Script to collect files harvested via gulo (https://github.com/VertNet/gulo) into BigQuery.
+
+This program dumps a full snapshot of multiple files in Google Cloud storage into a new BigQuery table in the following steps:
+
+1. Creates the 'dumps' dataset, if it doesn't previously exist.
+2. Extracts a list of file paths from a CartoDB table (https://vertnet.cartodb.com/tables/resource_staging). Important: Make sure the the field ```harvestfolder``` or ```harvestfoldernew``` contains the Google Storage path to the latest file for each resource. Even more important: Make sure that the schema for every file is consistent with the schema for BigQuery. Any change in the source file structure requires a corresponding change in the ```schema.json``` file, which can be generated from the ```harvest_fields``` file.
+3. For each file from step 2, a single job is created to load the data into the BigQuery table
+4. Once all jobs have finished, checks are made to see if any job has failed. If a load job fails, the whole upload of that particular resource is aborted.
+5. For failed jobs, an individual load job is run for each controbutin data file. Thus, partial resources can still be loaded from files that have no problematic data.
+6. A list of the failed data files is created in the file 'failed.txt'.
 
 Requirements
 ------------
 
-In order to run, this script needs the googleapis module installed and accessible to python via the PYTHONPATH. The module and instructions on how to install it can be found here: https://github.com/jotegui/googleapis.
+googleapis
+----------
 
-It also requires the client_secrets.json file, which can be obtained through the Developers' console (https://console.developers.google.com). Please refer to the documentation in the googleapis GitHub repo for instructions on how to get this client_secrets.json file.
+The ```fullDump.py``` script requires the googleapis module. More information on the googleapis module and how to install it can be found here at https://github.com/jotegui/googleapis. Install the googleapis module and add the path to it in the environment variable ``PYTHONPATH`` (e.g., ```export PYTHONPATH=$PYTHONPATH:/Users/Me/Projects/VertNet/``` where the ```googlapis``` folder is under VertNet). Make sure the googleapis module is functional in python before continuing. In particular, make sure that an appropriate ```client_secrets.json``` file is in the ```googleapis``` folder. This file is described at https://developers.google.com/api-client-library/python/guide/aaa_client_secrets and can be generated and downloaded from the Developers' console (https://console.developers.google.com). In the console, select the project, then select the Credentials page under APIs & auth. If there is already a ClientID for native application in the OAuth list, click on "Download JSON" and put that file in the googleapis folder. Otherwise, click on "Create new Client ID". Select "Installed application" as the Application type and "Other" as the Installed Application type. Then click on "Create Client ID" and download the ```client_secrets.json``` file for this application as described above.
 
-The configuration variables for the BigQuery and CloudStorage services are included in the folder, in the fullDump_cred.py module. The fullDump.py script is prepared to load them automatically.
+BigQuery and CloudStorage
+-------------------------
 
-The load jobs performed by BigQuery require that a schema of the table be specified. This must be provided in the schema.json file, which _must_ be in the same folder as fullDump.py. The repository already has a working example of such file.
+The configuration variables for the BigQuery and CloudStorage services are included in ```fullDump_cred.py```. The ```fullDump.py``` script is prepared to load them automatically.
 
 Setup
 -----
 
-The first run of the script will generate two files: bigquery.dat and storage.dat. These files avoid having to re-authenticate each time the script is run.
+The first run of ```fullDump.py``` will require two authentications and will generate two files: ```bigquery.dat``` and ```storage.dat```. These files avoid having to re-authenticate each time the script is run.
 
-Although not necessary, these files can be pre-built. This, in fact, can help making sure the googleapis module is accessible to python. To do that, open the python interpreter and execute the following code:
+Although not necessary, these files can be pre-built. To do so, open the python interpreter and execute the following code:
 
-    from googleapis import BigQuery, CloudStorage  # Import the module
-    from fulldump_cred import cs_cred, bq_cred  # Import the credentials
-    bq = BigQuery.BigQuery(bq_cred)
-    cs = CloudStorage.CloudStorage(cs_cred)
+```
+cd fullDump
+python
 
-The authentication flow will run twice (_i.e._, the authentication window will open twice), one for BigQuery and another one for CloudStorage. Keep the client_secrets.json file and the two .dat files in each folder that will run any googleapi services; that way, you won't need to re-authenticate.
+>>> from googleapis import BigQuery, CloudStorage  # Import the module
+>>> from fulldump_cred import cs_cred, bq_cred  # Import the credentials
+>>> bq = BigQuery.BigQuery(bq_cred) # Create the bigquery.dat file
+>>> cs = CloudStorage.CloudStorage(cs_cred) # Create the storage.dat file
+```
 
-The schema.json file can be generated by running the build_schema.py program, just like this:
+Authentication windows will open twice, once for BigQuery and once for CloudStorage. To avoid having to authenticate manually each time a script is run, keep the ```client_secrets.json``` file in the ```googleapis``` folder and the two .dat files in any folder with a script that will run googleapi services.
 
-    $ ./build_schema.py
+schema.json
+-----------
 
-This only needs a file named harvest_fields with a list of all the names of the fields in the harvested files, one name per line, with nothing more. It will overwrite any existing schema.json file, so make sure you create a backup, just in case.
+The load jobs performed by BigQuery require that a schema of the table be specified. This must be provided in file ```schema.json```, which _must_ be in the same folder as ```fullDump.py```. The ```schema.json``` file can be built from a simpler file called ```harvest_fields```, which contains an ordered list of all the names of the fields in the harvested files, one name per line. The repository already has a working example of such file. Modify it to match the structure of the files that will be uploaded into BigQuery, then run the script ```build_schema.py```:
 
-The number of fields _must match_ between the schema.json file and the data files, or the load jobs will fail.
+```
+   $ ./build_schema.py
+```
+
+The number of fields _must match_ between the ```schema.json``` file and the data files, or the load jobs will fail.
 
 How it works
 ------------
 
-Make sure the client_secrets.json, schema.json, bigquery.dat and storage.dat files are in the same folder as the fullDump.py and fulldump_cred.py files.
-
-The script is prepared to build a new BigQuery table in the 'dumps' dataset, called full_YYYYMMDD, with the current date in the specified format. For example, on July 30th, 2014, it would create the table dumps.full_20140730. The default values can be overriden by changing the appropriate attributes in the fullDump.py, lines 21-23. Besides, the script will generate a file for the failed uploads (see below), named 'failed.txt' by default. This can also be changed, on line 26.
+Make sure the ```client_secrets.json``` is in the ```googleapis``` folder and that the files ```schema.json```, ```bigquery.dat``` and ```storage.dat``` are in the same folder as the ```fullDump.py``` and ```fulldump_cred.py``` scripts.
 
 Then simply run:
 
     python fullDump.py
 
-And enjoy the show. The program will throw updates on each step.
+And enjoy the show. The program will show updates on each step.
 
-At the end, the program will inform if there was any file that could not be loaded into BigQuery. The list of failed files will be located in the same folder as fullDump.py, and will be called by default 'failed.txt'. These failures usually happen because there is a strange character in the data files, and these files cannot be uploaded to BigQuery unless these characters have been dealt with.
+The ```fullDump.py``` script builds a new BigQuery table in the 'dumps' dataset, called full_YYYYMMDD, where YYYMMDD is replaced by the current date when the script is run. For example, running the script on July 30th, 2014 would create the table dumps.full_20140730. The default values can be overriden by changing the ```dataset_name``` in ```fullDump.py```. 
 
-What it does
-------------
-
-This program dumps a full snapshot of the VertNet harvested files into a new BigQuery table.
-
-1. It first creates the 'dumps' dataset, if it doesn't previously exist.
-2. Then, it extracts a list of all the VertNet IPT resources and their last harvested folder path from the CartoDB resource_staging table. Important: Make sure the the harvestfolder field is filled with the latest harvest for the resource. Even more important: Make sure that the schema for every harvested file is consistent with the schema for BigQuery. If there was a change in the harvesting schema, there will have to be a complete reharvest and full dump from these newly harvested files.
-3. For each of those files, it creates a single job to load the data into the BigQuery table
-4. Once all jobs have finished, it checks if any job has failed. This usually happens because a data file has a strange character. If the load job fails, the whole upload of the resource is aborted.
-5. For those failed jobs, it runs an individual load job for each data file. Thus, all files except the problematic ones will be present in the dump.
-6. Lastly, it dumps a list of the failed data files to a local text file, named 'failed.txt' by default.
+The script will also generate a file in the same folder as ```fullDump.py``` (based on the property ```dump_file```, named ```failed.txt``` by default) containing a list of files that fail to upload into BigQuery. Failures usually occur if there is an illegal character in the data files, and these files cannot be uploaded to BigQuery unless these characters have been removed with.
 
 Contact
 -------
 
-Any question, shoot me an email (javier.otegui@gmail.com)
+For questions and comments, contact any of the repository contributors.
