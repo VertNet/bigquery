@@ -40,17 +40,26 @@ class Dumper():
         
         # Call CartoDB API
         api_url = "https://vertnet.cartodb.com/api/v2/sql"
-        # q = "select harvestfolder from resource_staging where ipt is true and networks like '%VertNet%'"
-        q = "select harvestfoldernew from resource_staging where icode='UNR'"
+        # q = "select harvestfoldernew from resource_staging where harvestfoldernew is not null and networks like '%VertNet%' and icode='UWYMV'"
+        # q = "select harvestfoldernew from resource_staging where harvestfoldernew is not null and length(harvestfoldernew)>0 and networks like '%VertNet%'"
+        q = "select harvestfoldernew from resource_staging where forbigquery='true' ORDER BY icode, github_reponame ASC"
         params = {'q': q}
         r = requests.get(api_url, params=params)
         
         # Return results
         if r.status_code == 200:
             rows = json.loads(r.content)['rows']
+#            print "rows=%s" % rows
+            resourcecount=0
             for i in rows:
-#                self.resources.append(i['harvestfolder'].split('/', 1)[1])
+#                b=i['harvestfoldernew']
+#                print "b=%s" % b
+#                a=i['harvestfoldernew'].split('/', 1)[1]
+#                print "a=%s" % a
+                resourcecount += 1
+                print "%s) %s" % (resourcecount, i['harvestfoldernew'])
                 self.resources.append(i['harvestfoldernew'].split('/', 1)[1])
+#                self.resources.append(i['harvestfolder'].split('/', 1)[1])
         else:
             print "Something went wrong with the query:"
             print r.text
