@@ -114,7 +114,7 @@ class Dumper():
         
         # Check failed jobs
         for resource in self.load_jobs:
-            job_id = self.load_jobs[resource]
+            job_id = self.load_jobs[resource]['jobReference']['jobId']
             status = self.bq.check_job(job_id)
             if status['state'] == 'DONE' and 'errorResult' in status:
                 print 'Resource {0} failed and job was aborted. Queued for individual load.'
