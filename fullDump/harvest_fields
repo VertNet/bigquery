@@ -99,7 +99,7 @@ minimumdistanceabovesurfaceinmeters
 minimumelevationinmeters
 month
 municipality
-occurrenceID
+occurrenceid
 occurrenceremarks
 occurrencestatus
 organismid
@@ -145,7 +145,7 @@ institutioncode
 collectioncode
 datasetname
 ownerinstitutioncode
-basisOfRecord
+basisofrecord
 informationwithheld
 datageneralizations
 dynamicproperties
