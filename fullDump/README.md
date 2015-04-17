@@ -43,6 +43,8 @@ Make sure the client_secrets.json, schema.json, bigquery.dat and storage.dat fil
 
 The script is prepared to build a new BigQuery table in the 'dumps' dataset, called full_YYYYMMDD, with the current date in the specified format. For example, on July 30th, 2014, it would create the table dumps.full_20140730. The default values can be overriden by changing the appropriate attributes in the fullDump.py, lines 21-23. Besides, the script will generate a file for the failed uploads (see below), named 'failed.txt' by default. This can also be changed, on line 26.
 
+You can customize how the harvest folders are selected from the CartoDB file by editing the SELECT statments in fullDump.py ~l43.
+
 Then simply run:
 
     python fullDump.py
