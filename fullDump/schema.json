@@ -42,6 +42,10 @@
     }, 
     {
       "type": "STRING", 
+      "name": "doi"
+    }, 
+    {
+      "type": "STRING", 
       "name": "iptlicense"
     }, 
     {
@@ -406,7 +410,7 @@
     }, 
     {
       "type": "STRING", 
-      "name": "occurrenceID"
+      "name": "occurrenceid"
     }, 
     {
       "type": "STRING", 
@@ -590,7 +594,7 @@
     }, 
     {
       "type": "STRING", 
-      "name": "basisOfRecord"
+      "name": "basisofrecord"
     }, 
     {
       "type": "STRING", 

@@ -14,6 +14,7 @@ mv vertnet_latest_mammals.csv.gz000000000007 mamm7.csv.gz
 mv vertnet_latest_mammals.csv.gz000000000008 mamm8.csv.gz
 mv vertnet_latest_mammals.csv.gz000000000009 mamm9.csv.gz
 mv vertnet_latest_mammals.csv.gz000000000010 mamm10.csv.gz
+mv vertnet_latest_mammals.csv.gz000000000011 mamm11.csv.gz
 gunzip mamm*
 sed '1d' mamm1.csv > tmp1
 sed '1d' mamm2.csv > tmp2
@@ -25,6 +26,7 @@ sed '1d' mamm7.csv > tmp7
 sed '1d' mamm8.csv > tmp8
 sed '1d' mamm9.csv > tmp9
 sed '1d' mamm10.csv > tmp10
-cat mamm0.csv tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 > vertnet_latest_mammals.csv
+sed '1d' mamm11.csv > tmp11
+cat mamm0.csv tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 > vertnet_latest_mammals.csv
 gzip vertnet_latest_mammals.csv
 gsutil cp vertnet_latest_mammals.csv.gz gs://vertnet-byclass/vertnet_latest_mammals.csv.gz

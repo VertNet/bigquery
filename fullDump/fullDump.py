@@ -83,6 +83,7 @@ class Dumper():
         print "Building list of chunks for {0}".format(resource)
         
         uri_list = []
+        # Failure occurred here once when the file names in Cloud Storage began with '/'.
         for i in self.cs.list_bucket(prefix=resource)['items']:
             uri = '/'.join(["gs:/", self.cs._BUCKET_NAME, i['name']])
             uri_list.append(uri)

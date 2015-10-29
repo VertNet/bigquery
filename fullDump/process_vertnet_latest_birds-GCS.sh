@@ -16,6 +16,7 @@ mv vertnet_latest_birds.csv.gz000000000009 bird9.csv.gz
 mv vertnet_latest_birds.csv.gz000000000010 bird10.csv.gz
 mv vertnet_latest_birds.csv.gz000000000011 bird11.csv.gz
 mv vertnet_latest_birds.csv.gz000000000012 bird12.csv.gz
+mv vertnet_latest_birds.csv.gz000000000013 bird13.csv.gz
 gunzip bird*
 sed '1d' bird1.csv > tmp1
 sed '1d' bird2.csv > tmp2
@@ -29,6 +30,7 @@ sed '1d' bird9.csv > tmp9
 sed '1d' bird10.csv > tmp10
 sed '1d' bird11.csv > tmp11
 sed '1d' bird12.csv > tmp12
-cat bird0.csv tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 > vertnet_latest_birds.csv
+sed '1d' bird13.csv > tmp13
+cat bird0.csv tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 tmp13 > vertnet_latest_birds.csv
 gzip vertnet_latest_birds.csv
 gsutil cp vertnet_latest_birds.csv.gz gs://vertnet-byclass/vertnet_latest_birds.csv.gz
